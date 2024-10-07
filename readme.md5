@@ -1,0 +1,178 @@
+Book Review and Recommendation API
+This project is a REST API built with FastAPI for managing books, reviews, and generating user-specific book recommendations. It uses PostgreSQL as the database and integrates AWS ElastiCache (Redis) for caching recommendations.
+
+Table of Contents
+
+Features
+Prerequisites
+Installation
+Database Setup
+Running the Application
+Testing
+Deploying
+Sample Data Import
+API Documentation
+Environment Variables
+Contributing
+Features
+CRUD operations for managing books and reviews.
+Generate book summaries using Llama AI.
+Provide user-specific book recommendations based on reviews and genre preferences.
+Caching with AWS ElastiCache (Redis).
+API documentation with Swagger and Redoc.
+Prerequisites
+Python 3.8+
+PostgreSQL
+Redis or AWS ElastiCache (for caching)
+Docker (optional, for deployment)
+Poetry (for dependency management)
+
+
+Installation
+Clone the repository:
+
+bash
+Copy code
+git clone https://github.com/your-username/book-review-recommend.git
+cd book-review-recommend
+
+Create a virtual environment and activate it:
+
+bash
+Copy code
+python3 -m venv venv
+source venv/bin/activate
+
+Install dependencies using Poetry:
+
+bash
+Copy code
+poetry install
+
+Set up the environment variables. Create a .env file in the project root:
+
+ini
+
+Copy code
+
+DATABASE_URL=postgresql+asyncpg://user:password@localhost:5432/books_db
+
+REDIS_URL=redis://<your-elasticache-endpoint>:6379
+
+Database Setup
+
+Install PostgreSQL and create a new database:
+
+bash
+
+Copy code
+
+psql -U postgres
+
+CREATE DATABASE books_db;
+CREATE USER books_user WITH PASSWORD 'password';
+GRANT ALL PRIVILEGES ON DATABASE books_db TO books_user;
+
+Apply migrations to set up the database schema:
+
+bash
+Copy code
+
+alembic upgrade head
+
+Verify that your database is set up correctly by checking the tables.
+
+Running the Application
+
+Start the FastAPI application locally:
+
+bash
+
+Copy code
+
+uvicorn app.main:app --reload
+
+The application will run at http://127.0.0.1:8000.
+
+Navigate to the Swagger docs at:
+
+
+http://127.0.0.1:8000/docs (Swagger UI)
+
+http://127.0.0.1:8000/redoc (Redoc)
+
+Testing
+
+
+Testing with Postman: You can also import the Postman collection available in the /postman folder to manually test API endpoints.
+
+Deploying
+Deploy with Docker
+Build the Docker image:
+
+bash
+Copy code
+docker build -t fastapi-book-api .
+Run the Docker container:
+
+bash
+
+Copy code
+
+docker run -d -p 8000:8000 --name book-api fastapi-book-api
+
+Access the application at http://localhost:8000.
+
+
+Deploy on AWS (EC2 or ECS)
+
+EC2: Launch an EC2 instance and SSH into the instance. Then follow the steps from "Running the Application" to set up Python, install dependencies, and start the application.
+
+ECS: Create a task definition with the Docker image and deploy it as a service in ECS.
+
+Deploy with AWS Elastic Beanstalk (Optional)
+Install the AWS Elastic Beanstalk CLI:
+
+bash
+Copy code
+pip install awsebcli
+
+Initialize your Elastic Beanstalk environment:
+
+bash
+
+Copy code
+
+eb init -p docker fastapi-book-api
+
+Deploy the application:
+
+bash
+
+Copy code
+
+eb create fastapi-book-env
+
+Open the deployed application:
+
+bash
+
+Copy code
+
+eb open
+
+
+API Documentation
+The API exposes several endpoints for managing books, reviews, and recommendations:
+
+POST /books: Add a new book.
+GET /books: Retrieve all books.
+GET /books/{id}: Retrieve a specific book by ID.
+POST /books/{id}/reviews: Add a review for a book.
+GET /books/{id}/reviews: Retrieve all reviews for a book.
+GET /books/{id}/summary: Get a summary of a book.
+GET /recommendations: Get book recommendations based on user preferences.
+For more detailed API information, visit:
+
+Swagger: http://localhost:8000/docs
+Redoc: http://localhost:8000/redoc
